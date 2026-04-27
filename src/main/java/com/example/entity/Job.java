@@ -17,6 +17,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -48,9 +49,12 @@ public class Job {
     @Column(name = "job_type", nullable = false)
     private JobType jobType;
 
+
+    @Column(name = "company_name", nullable = false)
     private String companyName;
 
-    private Double salary;
+    @Column(name = "salary", nullable = false)
+    private BigDecimal salary;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)

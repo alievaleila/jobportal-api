@@ -9,15 +9,13 @@ public record JobRequestDto(
         String location,
         JobType jobType,
 
-        @Min(value = 0, message = "Page index cannot be negative")
-        Integer page,
-
-        @Min(value = 1, message = "Size must be at least 1")
-        @Max(value = 100, message = "Size cannot exceed 100")
-        Integer size
+        @Min(0) Integer page,
+        @Min(1) @Max(100) Integer size,
+        String sortBy
 ) {
     public JobRequestDto {
         if (page == null) page = 0;
         if (size == null) size = 10;
+        if (sortBy == null) sortBy = "createdAt";
     }
 }

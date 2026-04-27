@@ -1,7 +1,9 @@
 package com.example.service.impls;
 
+import com.example.dto.JobCreateDto;
 import com.example.dto.JobRequestDto;
 import com.example.dto.JobResponseDto;
+import com.example.entity.Job;
 import com.example.mapper.JobMapper;
 import com.example.repository.JobRepository;
 import com.example.repository.specification.JobSpecification;
@@ -11,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -32,5 +35,13 @@ public class JobServiceImpl implements JobService {
 
         return jobRepository.findAll(spec, pageable)
                 .map(jobMapper::toDto);
+    }
+
+    @Transactional
+    @Override
+    public void createJob(JobCreateDto dto) {
+        Job job = jobMapper.toEntity(dto);
+
+        jobRepository.save(job);
     }
 }
