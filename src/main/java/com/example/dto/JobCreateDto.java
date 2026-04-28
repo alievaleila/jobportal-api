@@ -5,22 +5,24 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
-public record JobCreateDto (@NotBlank(message = "Job title is required")
-                            String title,
+import java.math.BigDecimal;
 
-                            @NotBlank(message = "Description is required")
-                            String description,
+public record JobCreateDto(@NotBlank(message = "Job title is required")
+                           String title,
 
-                            @NotBlank(message = "Location is required")
-                            String location,
+                           @NotBlank(message = "Description is required")
+                           String description,
 
-                            @NotNull(message = "Job type is required")
-                            JobType jobType,
+                           @NotBlank(message = "Location is required")
+                           String location,
 
-                            @NotBlank(message = "Company name is required")
-                            String companyName,
+                           @NotNull(message = "Job type is required")
+                           JobType jobType,
 
-                            @Positive(message = "Salary must be positive")
-                            Double salary
+                           @NotBlank(message = "Company name is required")
+                           String companyName,
+
+                           @Positive(message = "Salary must be positive")
+                           BigDecimal salary
 ) {
 }

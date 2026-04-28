@@ -1,8 +1,8 @@
 package com.example.service.impls;
 
 import com.example.dto.JobCreateDto;
-import com.example.dto.JobRequestDto;
 import com.example.dto.JobResponseDto;
+import com.example.dto.JobSearchRequestDto;
 import com.example.entity.Job;
 import com.example.mapper.JobMapper;
 import com.example.repository.JobRepository;
@@ -15,6 +15,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Set;
+
 @Service
 @RequiredArgsConstructor
 public class JobServiceImpl implements JobService {
@@ -23,25 +25,25 @@ public class JobServiceImpl implements JobService {
     private final JobMapper jobMapper;
 
     @Override
-    public Page<JobResponseDto> searchJobs(JobRequestDto request) {
-
+    public Page<JobResponseDto> searchJobs(JobSearchRequestDto request) {
         var spec = JobSpecification.build(request.keyword(), request.location(), request.jobType());
+
+        Set<String> allowed = Set.of("createdAt", "salary", "title", "companyName");
+        String sortField = allowed.contains(request.sortBy()) ? request.sortBy() : "createdAt";
 
         var pageable = PageRequest.of(
                 request.page(),
                 request.size(),
-                Sort.by("createdAt").descending()
+                Sort.by(Sort.Direction.DESC, sortField)
         );
 
-        return jobRepository.findAll(spec, pageable)
-                .map(jobMapper::toDto);
+        return jobRepository.findAll(spec, pageable).map(jobMapper::toDto);
     }
 
     @Transactional
     @Override
-    public void createJob(JobCreateDto dto) {
+    public JobResponseDto createJob(JobCreateDto dto) {
         Job job = jobMapper.toEntity(dto);
-
-        jobRepository.save(job);
+        return jobMapper.toDto(jobRepository.save(job));
     }
 }

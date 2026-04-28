@@ -11,12 +11,6 @@ public final class JobSpecification {
     private JobSpecification() {
     }
 
-    public static Specification<Job> withDynamicFilters(String keyword, String location, JobType jobType) {
-        return Specification.where(hasKeyword(keyword))
-                .and(hasLocation(location))
-                .and(hasJobType(jobType));
-    }
-
     private static Specification<Job> hasKeyword(String keyword) {
         return (root, query, cb) -> {
             if (!StringUtils.hasText(keyword)) return null;

@@ -27,10 +27,16 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
-public class User implements UserDetails{
+public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false)
+    private String firstname;
+
+    @Column(nullable = false)
+    private String lastname;
 
     @Column(unique = true, nullable = false)
     private String email;

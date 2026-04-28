@@ -4,7 +4,7 @@ import com.example.enums.JobType;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 
-public record JobRequestDto(
+public record JobSearchRequestDto(
         String keyword,
         String location,
         JobType jobType,
@@ -13,7 +13,7 @@ public record JobRequestDto(
         @Min(1) @Max(100) Integer size,
         String sortBy
 ) {
-    public JobRequestDto {
+    public JobSearchRequestDto {
         if (page == null) page = 0;
         if (size == null) size = 10;
         if (sortBy == null) sortBy = "createdAt";
