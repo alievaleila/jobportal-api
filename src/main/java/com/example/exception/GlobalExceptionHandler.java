@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -47,6 +48,12 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorDetails> handleDataIntegrity(DataIntegrityViolationException ex,
                                                             HttpServletRequest request) {
         return buildResponse(HttpStatus.CONFLICT, "Resource already exists", request, null);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ErrorDetails> handleAccessDenied(AccessDeniedException ex,
+                                                           HttpServletRequest request) {
+        return buildResponse(HttpStatus.FORBIDDEN, "Access denied", request, null);
     }
 
     @ExceptionHandler(Exception.class)

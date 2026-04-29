@@ -42,8 +42,8 @@ public class AuthService {
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
 
-        Role userRole = roleRepository.findByName(RoleType.ROLE_USER)
-                .orElseThrow(() -> new RuntimeException("Error: Role ROLE_USER is not found in database."));
+        Role userRole = roleRepository.findByName(RoleType.ROLE_ADMIN)
+                .orElseThrow(() -> new RuntimeException("Role not found"));
 
         user.setRoles(Set.of(userRole));
 
