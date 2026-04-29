@@ -75,4 +75,9 @@ public class JwtService {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);
     }
+
+    public long getExpiration(String token) {
+        Date expiration = extractClaim(token, Claims::getExpiration);
+        return Math.max(0, expiration.getTime() - System.currentTimeMillis());
+    }
 }

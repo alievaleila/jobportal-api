@@ -1,6 +1,7 @@
 package com.example.exception;
 
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
@@ -42,6 +43,12 @@ public class GlobalExceptionHandler {
         return buildResponse(HttpStatus.BAD_REQUEST, "Validation failed", request, errors);
     }
 
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ErrorDetails> handleDataIntegrity(DataIntegrityViolationException ex,
+                                                            HttpServletRequest request) {
+        return buildResponse(HttpStatus.CONFLICT, "Resource already exists", request, null);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorDetails> handleGlobalException(Exception ex, HttpServletRequest request) {
         return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, "An unexpected error occurred",
@@ -61,4 +68,6 @@ public class GlobalExceptionHandler {
                 status
         );
     }
+
+
 }

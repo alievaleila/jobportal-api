@@ -9,6 +9,7 @@ import com.example.repository.JobRepository;
 import com.example.repository.specification.JobSpecification;
 import com.example.service.JobService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class JobServiceImpl implements JobService {
@@ -26,16 +28,13 @@ public class JobServiceImpl implements JobService {
 
     @Override
     public Page<JobResponseDto> searchJobs(JobSearchRequestDto request) {
+        log.info("Job search request: keyword={}, location={}, jobType={}", request.keyword(), request.location(), request.jobType());
         var spec = JobSpecification.build(request.keyword(), request.location(), request.jobType());
 
         Set<String> allowed = Set.of("createdAt", "salary", "title", "companyName");
         String sortField = allowed.contains(request.sortBy()) ? request.sortBy() : "createdAt";
 
-        var pageable = PageRequest.of(
-                request.page(),
-                request.size(),
-                Sort.by(Sort.Direction.DESC, sortField)
-        );
+        var pageable = PageRequest.of(request.page(), request.size(), Sort.by(Sort.Direction.DESC, sortField));
 
         return jobRepository.findAll(spec, pageable).map(jobMapper::toDto);
     }
@@ -43,6 +42,7 @@ public class JobServiceImpl implements JobService {
     @Transactional
     @Override
     public JobResponseDto createJob(JobCreateDto dto) {
+        log.info("Creating job: title={}", dto.title());
         Job job = jobMapper.toEntity(dto);
         return jobMapper.toDto(jobRepository.save(job));
     }

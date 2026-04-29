@@ -15,10 +15,17 @@ public final class JobSpecification {
         return (root, query, cb) -> {
             if (!StringUtils.hasText(keyword)) return null;
 
-            String pattern = "%" + keyword.toLowerCase() + "%";
-            return cb.or(
-                    cb.like(cb.lower(root.get("title")), pattern),
-                    cb.like(cb.lower(root.get("description")), pattern)
+            String tsQuery = keyword.trim().replace(" ", " & ");
+            return cb.isTrue(
+                    cb.function("to_tsvector", Boolean.class,
+                            cb.literal("english"),
+                            root.get("title")
+                    ).in(
+                            cb.function("to_tsquery", Object.class,
+                                    cb.literal("english"),
+                                    cb.literal(tsQuery)
+                            )
+                    )
             );
         };
     }

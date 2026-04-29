@@ -11,9 +11,9 @@ import com.example.repository.UserRepository;
 import com.example.security.CustomUserDetailsService;
 import com.example.security.JwtService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -34,6 +35,7 @@ public class AuthService {
 
     @Transactional
     public AuthResponse register(RegisterRequest request) {
+        log.info("Registering new user: email={}", request.getEmail());
         User user = new User();
         user.setFirstname(request.getFirstname());
         user.setLastname(request.getLastname());
@@ -46,9 +48,11 @@ public class AuthService {
         user.setRoles(Set.of(userRole));
 
         userRepository.save(user);
-
+        log.info("User registered successfully: email={}", request.getEmail());
         String token = jwtService.generateToken(user);
+
         return new AuthResponse(token);
+
     }
 
     public AuthResponse login(LoginRequest request) {
